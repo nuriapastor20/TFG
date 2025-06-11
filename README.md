@@ -14,7 +14,7 @@ El proyecto incluye:
 - Construcción de un dashboard dinámico con KPIs, filtros, mapas y análisis detallado por causas, canales y clientes.
 
 ## 🗂 Estructura del repositorio
-
+```
 ├── Extractor_Donativos/
 │ ├── script_extractor.qvs # Script de carga y transformación (QVDs)
 │ ├── ApplyMap_CANAL.qvs # Mapa de equivalencias canal
@@ -24,7 +24,7 @@ El proyecto incluye:
 │ ├── script_cuadro.qvs # Script del dashboard (carga QVDs y visualización)
 │ └── ...
 ├── README.md # Este documento
-
+```
 
 ## 💻 Scripts disponibles
 

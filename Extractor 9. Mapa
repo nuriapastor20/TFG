@@ -1,0 +1,26 @@
+MAP_RELACIONPOLIGONO:
+Mapping Load
+	DT as Map_relacionopoligono_1,
+	Poligono as Map_relacionopoligono_2
+FROM Relacion_DT_2023.xlsx]
+(ooxml, embedded labels, table is Hoja1);
+
+AREA_MAPA_TERRITORIAL_DONATIVOS:
+	Load
+    MAP.xml.Name as Map_relacionopoligono_1,
+    MAP.xml.Area as Map_AreasPoligono_2,
+    ApplyMap('MAP_RELACIONPOLIGONO',  MAP.xml.Name) as Areamap
+FROM MAP.xml]
+(kml, Table is [MAP.xml/SB2013_OK]);
+
+
+Left Join(AREA_MAPA_TERRITORIAL_DONATIVOS)
+Load
+    TRIM(DT) as [Cód. DT],
+    Poligono as Map_relacionopoligono_1
+FROM Relacion_DT_2023.xlsx]
+(ooxml, embedded labels, table is Hoja1);
+    
+store 'AREA_MAPA_TERRITORIAL_DONATIVOS' into 'AREA_MAPA_TERRITORIAL_DONATIVOS.qvd'(qvd);
+
+

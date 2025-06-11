@@ -1,0 +1,23 @@
+Selector_med_autoservicio:
+LOAD * INLINE [
+#Cod_selector_med_autoservicio,Nombre_medida,
+10,Importe Donativos (€)
+11,Importe Medio
+12,Número Donativos
+13,Causas impulsadas
+14,Número ONG
+15,Número donativos puntuales
+16,Número donativos periódicos
+17,Número Donantes
+18,Núm. cliente con donativo
+19,Núm. cliente con más de un donativo
+20,Importe donativos cliente
+21,Número donativos cliente
+22,% cliente con más de un donativo s/total de donantes
+23,% cliente con más de un donativo s/total de clientes donantes
+24,% Importe s/total
+25,% donativos s/total
+];
+
+
+

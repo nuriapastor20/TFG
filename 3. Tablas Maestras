@@ -1,0 +1,102 @@
+ONG:
+LOAD "PK_NUM_ONG",
+    "FK_OFICINA",
+    "DES_ONG_CORTA",
+    "DES_ONG_LARGA",
+    "FORMA_JURIDICA",
+    "NIF_ONG";
+SQL SELECT "PK_NUM_ONG",
+    "FK_OFICINA",
+    "DES_ONG_CORTA",
+    "DES_ONG_LARGA",
+    "NIF_ONG",
+    case when SUBSTR("NIF_ONG",1,1) LIKE '%G%' then 'Asociaciones y Fundaciones'
+         when SUBSTR("NIF_ONG",1,1) LIKE '%P%' or SUBSTR("NIF_ONG",1,1) LIKE '%Q%' or SUBSTR("NIF_ONG",1,1) 
+         							LIKE '%S%' then 'Org. públicos, locales, CCAA y estatales'
+         when SUBSTR("NIF_ONG",1,1) LIKE '%R%' then 'Congregaciones e instituciones religiosas'
+    	 else 'Resto' end as "FORMA_JURIDICA"
+	FROM ONG;
+store 'ONG' into 'Extractor/ONG.qvd' (qvd);  
+
+ORIGEN_DONACION:
+LOAD "PK_ORIGEN_DON" as COD_ORIGEN_ONG,
+    "DES_ORIGEN_DON_CORTA";
+SQL SELECT "PK_ORIGEN_DON",
+    "DES_ORIGEN_DON_CORTA"
+FROM ORIGEN_DONACION;
+store 'ORIGEN_DONACION' into 'Extractor/ORIGEN_DONACION.qvd' (qvd);         
+        
+ENTIDADES:
+LOAD *,
+if(left([NIF_Entidad],1) = 'G' , 'Asociaciones y Fundaciones',
+if(left([NIF_Entidad],1) = 'P' OR left([NIF_Entidad],1) = 'Q' OR left([NIF_Entidad],1) ='S',  'Org. públicos, locales, CCAA y estatales',
+if(left([NIF_Entidad],1) = 'R',  'Congregaciones e instituciones religiosas', 'Resto'))) as "FORMA_JURIDICA_ENT" 
+;
+        
+LOAD "PK_NUMPERSO", 
+    "COD_ORIGEN" as COD_ORIGEN_ENTIDADES, 
+    "COD_OFICINA" as COD_OFICINA_ANTIGUO, 
+    ApplyMap('MAP_INTEGRADOS',("COD_OFICINA"),"COD_OFICINA") as COD_OFICINA, 
+    ApplyMap('MAP_NUMPER_NIF',("PK_NUMPERSO"),null()) AS NIF_Entidad, 
+    "COD_DT" as COD_DT_ENTIDADES_ANTIGUO, 
+    "COD_DAN" as COD_DAN_ENTIDADES_ANTIGUO, 
+    if(DES_RAZON_SOCIAL <> -1, DES_RAZON_SOCIAL, 'Desconocido') as DES_RAZON_SOCIAL, 
+    LATITUD, 
+    LONGITUD;
+    
+SQL SELECT "ENT"."PK_NUMPERSO",
+    "ENT"."COD_ORIGEN",
+    "ENT"."COD_OFICINA",
+    "ENT"."COD_DT",
+    "ENT"."COD_DAN",
+    "ENT"."DES_RAZON_SOCIAL",
+    "ENT"."LATITUD",
+    "ENT"."LONGITUD",
+FROM ENTIDADES ENT;
+store 'ENTIDADES' into 'Extractor/ENTIDADES.qvd' (qvd);    
+
+usuarios:
+LOAD 
+    FK_USUARIO,
+    "FK_CENTRO" AS PK_CENTRO;
+SQL SELECT "FK_USUARIO",
+    "FK_CENTRO_ASIG",
+    "FK_TIPO_CENTRO_ASIG",
+    "FK_CENTRO",
+    "FECHA_CONTENIDO",
+    "FECHA_CARGA"
+FROM ASIGNACIONES;
+store 'usuarios' into 'Extractor/usuarios.qvd' (qvd);             
+
+CANALES2:
+LOAD "MES",
+    "IDC_FREQUENCY",
+    "IDC_VERSION",
+    "COD_CANAL" as COD_CANAL_IDC, 
+    "DES_CANAL",
+    "ORDEN",
+    "FECHA_CONTENIDO" as FECHA_CONTENIDO_IDC_CANALES,
+    "FECHA_CARGA" as FECHA_DATOS_IDC_CANALES,
+    if(IsNUll("PK_CANAL"), "COD_CANAL", "PK_CANAL") as PK_CANAL, 
+    "DES_CANAL_CATALAN" as DES_CANAL_DETALLADO_CATALAN,
+    "DES_CANAL_CASTELLANO" as DES_CANAL_DETALLADO_CASTELLANO;
+
+SQL SELECT A."MES",
+	A."IDC_FREQUENCY",
+    A."IDC_VERSION",
+    A."COD_CANAL",
+    A."DES_CANAL",
+    A."ORDEN",
+    A."FECHA_CONTENIDO",
+    A."FECHA_CARGA",
+    B."PK_CANAL",
+    B."DES_CANAL_CATALAN",
+    B."DES_CANAL_CASTELLANO"
+    
+FROM 
+(SELECT * FROM "CANALES1" WHERE "CANALES1"."IDC_VERSION" = (SELECT MAX(IDC_VERSION) FROM "CANALES1")) A 
+FULL OUTER JOIN
+(SELECT * FROM "CANALES2") B
+ON A."COD_CANAL" = B."PK_CANAL";
+
+store 'CANALES2' into 'Extractor/CANALES2.qvd' (qvd);      

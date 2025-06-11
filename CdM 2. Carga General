@@ -1,0 +1,232 @@
+MAP_PROVINCIA_INTEGRADOS:
+MAPPING LOAD 
+PK_CENTRO,
+FK_PROVINCIA
+FROM [Extractor/MAP_PROVINCIA_INTEGRADOS.qvd]
+(qvd);
+
+DONACIONES:
+LOAD
+    PK_NUM_DON						as PK_Donativo,
+	AutoNumber(NIF) 				as #NIF_Entidad,
+    AutoNumber(PK_NUMPERSO) 		as #PK_NUMPERSO,
+    PK_NUMPERSO                     as NUMPERSO_REC,
+    NIF_original,
+    PK_NUMPERSO_PERS_DONANTE 		as [Numperso Persona Donante],
+    IND_CLIENTE 					as [Tipo Donante], 
+    IF(PK_NUMPERSO_PERS_DONANTE <> -1, PK_NUMPERSO_PERS_DONANTE, COD_NUM_DONANTE_UNICO)       as [#COD_DONANTE],
+    AutoNumber(PK_COD_CAUSA) as #PK_COD_CAUSA,
+	AutoNumber(PK_NUM_ONG) as #PK_NUM_ONG,
+    AutoNumber(PK_CANAL) as #PK_CANAL,
+    SUBCANAL_BIZ, 
+    COD_ORIGEN as [Origen Donativo],
+    AutoNumber(COD_ORIGEN_ONG) as #COD_ORIGEN_ONG,
+    IMPORTE as [Importe],
+    if(IsNUll(PK_CENTRO), -1, PK_CENTRO) as #PK_CENTRO,
+    PK_CENTRO_OLD  as [Centro Donativo antiguo],
+   ApplyMap('MAP_PROVINCIA_INTEGRADOS',("PK_CENTRO"),"PK_PROVINCIA") as #PK_PROVINCIA,
+    PK_NEGOCIO as #PK_NEGOCIO,
+    COD_COMERCIO as [Cód. Comercio Donativo],
+	AutoNumber(FECHA_DONATIVO) as #FECHA_DONATIVO,
+    FECHA_DATOS_DONACIONES as #FECHA_DATOS_DONACIONES,
+    IND_MICRO_ONG as [Ind. Microdonativo],
+    IND_COM as [Ind. Com.],
+    IND_TRANS as [Ind. Transacción],
+    IND_ESTADO_DONATIVO as [Ind. Estado Donativo],
+    IND_CESION_DATOS as [Ind. Cesión Datos],
+    If(match(TIPO_DON,'M'), 'Donativos', if(match(TIPO_DON,'D'),'Donativos', if(match(TIPO_DON, 'C'),'Crowdfunding',TIPO_DON))) as [Tipo Donativo],
+    FRECUENCIA_DON as [Frecuencia Donativo],
+    DIGITO_CONTROL as [Digito Control Donativo],
+     TIPO_PERSONA as [Tipo persona], 
+    ENTIDAD_TRANS as [Entidad Trans.],
+    OFICINA_TRANS as [Oficina Trans.],
+    DIGITO_CONTROL_TRANS as [Dígito Control Transacción],
+    NUMERO_CONT_TRANS  as [Núm. Cont. Trans.],
+    OFICINA_RETR as [Oficina Retr.],
+    DOCID, DOCIDGAV,  ENTEXT,  CLAUBIZ,
+    FECHA_COMISION_ONG as [Fecha Comisión Donativo], FECHA_TRANSACCION_ONG as [Fecha Transacción Donativo],
+    FECHA_RETROCESION_ONG as [Fecha Retrocesión Donativo], FECHA_INICIO_CAUSA as [Fecha Inicio Causa],
+    FECHA_FIN_CAUSA as [Fecha Fin Causa], FECHA_DONATIVO - FECHA_INICIO_CAUSA +1 as [Día campaña]
+FROM [Extractor/DONACIONES.qvd]
+(qvd);
+
+
+F_DONATIVOS_contadora:
+load Distinct
+   PK_NUM_DON						as PK_Donativo,
+   1 								as Flag_NumDonativo
+FROM [Extractor/DONACIONES.qvd]
+(qvd);
+
+MAP_CENTROS_CON_DONATIVOS: 
+mapping Load
+	distinct PK_CENTRO,
+    			1 as FLAG_CENTRO_CON_DONATIVO
+FROM [Extractor/TX_ASR_DONACIONES.qvd]
+(qvd);
+
+CAUSAS:
+LOAD
+    AutoNumber(PK_COD_CAUSA) as #PK_COD_CAUSA, 
+    PK_COD_CAUSA as [Cód. Causa],
+    PK_COD_CAUSA&'- cmp. '&FECHA_INICIO_CAUSA&' a '&FECHA_FIN_CAUSA as [Cód. Causa - Campaña],
+    FK_NUM_ONG as [Núm ONG Causa],
+    COD_CONTRATO as [Cód. Contrato],
+    COD_AGRUPACION as [Cód. Agrupación Causa],
+    DES_CAUSA as [Des. Causa],
+    DES_AGRUPACION as [Des. Agrupación],
+    IND_MICRO as [Ind. Micro Causa],
+    IND_ACTIVIDAD as [Ind. Actividad Causa],
+    IND_OFICINAVIS as [Ind. Oficinavis Causa],
+    IND_LOEVIS as [Ind. LOEVIS Causa],
+    IND_MOVILVIS as [Ind. Movilvis Causa],
+    IND_INTERNETVIS as [Ind. Internetvis Causa],
+    IND_CAJEROVIS as [Ind. Cajerovis Causa],
+    IND_FUNVIS as [Ind. FUNVIS Causa],
+    IMPORTE1 as [Importe 1],
+    IMPORTE2 as [Importe 2],
+    IMPORTE3 as [Importe 3],
+    IMPORTE4 as [Importe 4],
+    IMPORTE_MIN as [Importe min.],
+    "DES_CAUSA" &' - '& "PK_COD_CAUSA_CAMPO" as [Causa],
+    if(IsNull(COD_AGRUPACION),null(),  DES_AGRUPACION &' - ' & COD_AGRUPACION) as [Agrupación Causa]
+FROM [Extractor/CAUSAS.qvd]
+(qvd);
+
+
+
+TD_ASR_ORIGEN_DONACION:
+LOAD
+    AutoNumber(COD_ORIGEN_ONG) as #COD_ORIGEN_ONG,
+    COD_ORIGEN_ONG as [Cód. Origen Donativo ONG],
+    DES_ORIGEN_DON_CORTA as [Des. Origen Donativo ONG]
+FROM [Extractor/ORIGEN_DONACION.qvd]
+(qvd);
+
+
+Jerarquia:
+LOAD
+    PK_CENTRO as [#PK_CENTRO], 
+    PK_CENTRO as [Centro Donativo],
+    FK_TIPO_CENTRO_GES as [Tipo Centro Ges.],
+    DES_CENTRO_GES as [Des. Centro Ges.],
+    DES_CENTRO as [Des. Centro],
+    Oficina,
+    COD_DAN as [Cód. DAN],
+    DES_DAN as [Des. DAN],
+    DAN,
+    FK_TIPO_CENTRO, 
+    FK_SUBTIPO_CENTRO, 
+    COD_DT as [Cód. DT],
+    DES_DT as [Des. DT],
+    DT,
+    Ámbito,
+    Territoriales,
+    COD_RED as [Cód. RED],
+    DES_RED as [Des. RED],
+    "COD_DG" as [Cód. DG],
+    "DES_DG" as [Des. DG],
+    "COORDENADA_X" AS COORDENADA_X_Centro_Donativo, 
+    "COORDENADA_Y" AS COORDENADA_Y_Centro_Donativo,
+    if(Oficina = 'Desconocido',null(),GeoMakePoint(replace(COORDENADA_X,'.',','),replace(COORDENADA_Y,'.',','))) as [Coordenada XY Centro Donativo] 
+FROM [Extractor/Jerarquia.qvd]
+(qvd)
+WHERE ApplyMap('MAP_CENTROS_CON_DONATIVOS',PK_CENTRO,null())=1
+;
+
+
+
+ENTIDADES:
+LOAD
+    AutoNumber(NIF_Entidad) as #NIF_Entidad,
+    PK_NUMPERSO as [Numperso Entidad],
+    if(isnull (DES_RAZON_SOCIAL), 'Desconocido' &' - '& NIF_Entidad, DES_RAZON_SOCIAL &' - '& NIF_Entidad) as [Razon Social - NIF],    
+    NIF_Entidad as [NIF Entidad],
+    FORMA_JURIDICA_ENT as [Forma Jurídica],
+    COD_ORIGEN_ENTIDADES as [Cód. Orígen Entidad],
+    COD_OFICINA_ANTIGUO as [Cód. Oficina Entidad antiguo],
+    COD_OFICINA as [Cód. Oficina Entidad],
+    COD_DT_ENTIDADES_ANTIGUO as [Cód. DT Entidad antiguo],
+    COD_DAN_ENTIDADES_ANTIGUO as [Cód. DAN Entidad antiguo],
+    DES_RAZON_SOCIAL as [Des. Razón Social Entidad],
+     LATITUD as [Latitud Entidad],
+     LONGITUD as [Longitud Entidad],
+     if(LATITUD = 0 AND LONGITUD = 0, NULL(),GeoMakePoint(replace(LATITUD,'.',','),replace(LONGITUD,'.',','))) as [Coordenada XY Entidades]
+FROM [Extractor/ENTIDADES.qvd]
+(qvd);
+
+
+Left Join (ENTIDADES)
+LOAD 
+[Centro Donativo] as [Cód. Oficina Entidad],
+[Des. Centro] &' - '& [Centro Donativo] as [Centro Entidad],
+[Cód. DAN] as [Cód. DAN Entidad],
+[Cód. DT] as [Cód. DT Entidad],
+[Des. DT] as [Des. DT Entidad],
+[Des. DAN] as [Des. DAN Entidad],
+[DT] as [DT Entidad],
+[DAN] as [DAN Entidad]
+resident Jerarquia;
+
+ONG:
+LOAD
+  AutoNumber(PK_NUM_ONG) as #PK_NUM_ONG,
+  PK_NUM_ONG as [Núm ONG],
+    FK_OFICINA as [Oficina ONG],
+    DES_ONG_CORTA as [Des. ONG Corta],
+    DES_ONG_CORTA as [Des. ONG],
+    DES_ONG_LARGA as [Des. ONG Larga],
+    DES_ONG_CORTA &' - '& NIF_ONG as [ONG - NIF],
+    "FORMA_JURIDICA" as [Tipo de entidad],
+    NIF_ONG 
+FROM [Extractor/TM_ASR_ONG.qvd]
+(qvd);
+
+
+TIPOS_NEGOCIO:
+LOAD
+    TIPO_CARTERA as [Tipo Cartera],
+   PK_NEGOCIO as #PK_NEGOCIO,
+    Replace(Replace("DESC_TIPO_CARTERA_CAST",'Banca ',''),'. Gestor','') as [Negocio],
+    Replace(Replace("DESC_TIPO_CARTERA_CAT",'Banca ',''),'. Gestor','') as [Negocios Cat.]
+FROM [Extractor/TIPOS_NEGOCIO.qvd]
+(qvd);
+
+
+PROVINCIAS:
+LOAD
+    PK_PROVINCIA as #PK_PROVINCIA,
+    PK_PROVINCIA as [Cód. Provincia Donativo],
+    DES_PROVINCIA as [Provincia],
+	AutoNumber(PK_AUTONOMIA) as #PK_AUTONOMIA
+FROM [Extractor/PROVINCIAS.qvd]
+(qvd);
+
+AUTONOMIAS:
+LOAD
+    AutoNumber(PK_AUTONOMIA) as #PK_AUTONOMIA,
+    PK_AUTONOMIA as [Cód. Autonomía],
+    DES_AUTONOMIA as [Autonomía]
+FROM [Extractor/AUTONOMIAS.qvd]
+(qvd);
+
+
+
+
+CANALES2:
+LOAD
+    AutoNumber(PK_CANAL) as #PK_CANAL,
+    PK_CANAL as [Cód. Canal],
+    DES_CANAL_DETALLADO_CATALAN as [Des. Canales Cat.],
+    DES_CANAL_DETALLADO_CASTELLANO as [Des. Canales],
+    ORDEN as [Orden Canal],
+    if(IsNUll(DES_CANAL), 'Otros', DES_CANAL) as [Canal] 
+FROM [Extractor/CANALES2.qvd]
+(qvd);
+
+
+
+AREA_MAPA_TERRITORIAL_DONATIVOS:
+Load *
+FROM [lib://APQOSD_FOLDER/01.QVD/Extraction/AREA_MAPA_TERRITORIAL_DONATIVOS.qvd] 
+(qvd);

@@ -1,0 +1,29 @@
+Calendario:
+LOAD
+    AutoNumber(FECHA_DONATIVO) as #FECHA_DONATIVO,
+    Fecha_completa,
+    Fecha,
+    DiaMes,
+    Mes,
+    Mes_Num,
+    AñoMes,
+    AñoMes_Num,
+    Año,
+    "Día Semana",
+    "Num. Semana",
+    Semana,
+    "Indicador Festivo",
+    DiaMesTendencia
+FROM [Extractor/Calendario.qvd]
+(qvd);
+
+
+
+fechaMax:
+load max(#FECHA_DATOS_DONACIONES) as Fechamax
+resident TX_ASR_DONACIONES;
+
+let vSys_CabeceraDatos = date(Peek('Fechamax',0,'fechaMax'),'DD/MM/YYYY');
+Drop Table fechaMax;
+
+

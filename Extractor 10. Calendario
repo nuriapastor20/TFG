@@ -1,0 +1,44 @@
+fechaMax:
+load max(FECHA_DONATIVO) as Fechamax 
+resident DONACIONES;
+LET vDateMax = IF(IsNull(Num(Peek('Fechamax',0,'fechaMax'))),'45638',Num(Peek('Fechamax',0,'fechaMax')));
+
+let fechaInicial = NUM(yearstart(today()-1, -3)); 
+
+do while fechaInicial <= $(vDateMax)
+
+CALENDARIO:
+LOAD 
+    date($(fechaInicial),'YYYYMMDD') 				as PK_ANYOMESDIA,
+    text(date($(fechaInicial),'YYYYMM')) 			as PK_ANYOMES,
+    dual(date($(fechaInicial),'DD-MM-YYYY'),num($(fechaInicial))) 		as Fecha_completa, 
+    num(Day($(fechaInicial)),'00') &'-'& month($(fechaInicial))  	    as Fecha, 
+    dual(date($(fechaInicial),'DD-MM'),num($(fechaInicial))) 			as DiaMes,
+    dual(date($(fechaInicial),'DD-MM-YYYY'),num($(fechaInicial))) 		as FECHA_DONATIVO,
+    dual(date($(fechaInicial),'DD-MM-YYYY'),num($(fechaInicial))) 		as [Dia],
+	month($(fechaInicial)) 												as Mes,
+    num(month($(fechaInicial)))											as Mes_Num,
+    dual(month($(fechaInicial)) & ' ' & year($(fechaInicial)),year($(fechaInicial))&num(month($(fechaInicial)))) as AñoMes,
+    year($(fechaInicial))&num(month($(fechaInicial)),'00')														 as AñoMes_Num,
+    year($(fechaInicial)) 																						as Año,
+    Weekday($(fechaInicial)) 																					as [Día Semana],
+    num(Weekday($(fechaInicial))) 																				as [Num. Semana],
+    Year($(fechaInicial))& ' - S'&Week($(fechaInicial)) 														as [Semana],
+    if (weekday($(fechaInicial)) = 6 or WeekDay($(fechaInicial)) = 7, 'Festivo', 'Laborable') 					as [Indicador Festivo],
+    num(month($(fechaInicial)),'00') &'-'& num(Day($(fechaInicial)),'00') 										as DiaMesTendencia
+    autogenerate 1;
+   
+    let fechaInicial = fechaInicial + 1;
+  
+    loop;
+
+store 'CALENDARIO' into 'Calendario.qvd' (qvd); 
+
+
+Drop Table fechaMax, TX_ASR_DONACIONES, TD_ASR_ORIGEN_DONACION, TM_ASR_CAUSAS,  TM_ASR_ENTIDADES,TM_ASR_ONG, DC_TD_CANALES, TD_TIPOS_NEGOCIO, Jerarquia,TM_PROVINCIAS,TM_AUTONOMIAS, usuarios, CALENDARIO,AREA_MAPA_TERRITORIAL_DONATIVOS,TAUX_MAP_PROVINCIA_INTEGRADOS, TX_ASR_DONACIONES_BIZ_AUX;
+
+
+Drop Table fechaMax, DONACIONES, ORIGEN_DONACION, CAUSAS,  ENTIDADES,ONG, CANALES2, TIPOS_NEGOCIO, Jerarquia, PROVINCIAS, 
+AUTONOMIAS, usuarios, CALENDARIO,AREA_MAPA_TERRITORIAL_DONATIVOS,AUX_MAP_PROVINCIA_INTEGRADOS, DONACIONES_BIZ_AUX; 
+
+

@@ -51,9 +51,11 @@ Estos scripts se encargan de la carga de QVDs generados previamente, la creació
 ## 🔗 Relación con la memoria
 
 En la memoria del TFG (capítulo 4.4 "Implementación") se describe el procedimiento general seguido en este repositorio.  
+
 Para evitar redundancias, se han incluido en el documento únicamente dos ejemplos representativos, y se remite a este repositorio para consultar el código completo.
 
 ## 📝 Licencia
 
 Este código se publica únicamente con fines académicos y demostrativos. 
+
 No contiene datos reales de clientes ni conexiones activas a bases internas.

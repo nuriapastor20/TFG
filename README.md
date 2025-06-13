@@ -16,13 +16,22 @@ El proyecto incluye:
 ## 🗂 Estructura del repositorio
 ```
 ├── Extractor_Donativos/
-│ ├── script_extractor.qvs # Script de carga y transformación (QVDs)
-│ ├── ApplyMap_CANAL.qvs # Mapa de equivalencias canal
-│ ├── ApplyMap_CAUSA.qvs # Mapa de equivalencias causa
-│ └── ...
-├── Cuadro_Donativos/
-│ ├── script_cuadro.qvs # Script del dashboard (carga QVDs y visualización)
-│ └── ...
+│ ├── Extractor 1. Definición de parámetros globales
+│ ├── Extractor 2. Mappings
+│ ├── Extractor 3. Tablas Maestras
+│ ├── Extractor 4. Tabla Donativos Bizum
+│ ├── Extractor 5. Tabla Causas
+│ ├── Extractor 6. Tabla Principal Donaciones
+│ ├── Extractor 7. Tabla Tipos de Negocio
+│ ├── Extractor 10. Calendario
+│ 
+├── Cuadro_de_Mando_Donativos/
+│ ├── CdM 1. Configuración General
+│ ├── CdM 2. Carga General
+│ ├── CdM 3. Tabla Donaciones
+│ ├── CdM 4. Calendario
+│ ├── CdM 5. Selector
+│ 
 ├── README.md # Este documento
 ```
 

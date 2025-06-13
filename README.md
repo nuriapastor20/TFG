@@ -15,6 +15,13 @@ El proyecto incluye:
 
 ## 🗂 Estructura del repositorio
 ```
+├── CdM/
+│ ├── CdM 1. Configuración General
+│ ├── CdM 2. Carga General
+│ ├── CdM 3. Tabla Donaciones
+│ ├── CdM 4. Calendario
+│ ├── CdM 5. Selector
+│ 
 ├── Extractor_Donativos/
 │ ├── Extractor 1. Definición de parámetros globales
 │ ├── Extractor 2. Mappings
@@ -24,13 +31,6 @@ El proyecto incluye:
 │ ├── Extractor 6. Tabla Principal Donaciones
 │ ├── Extractor 7. Tabla Tipos de Negocio
 │ ├── Extractor 10. Calendario
-│ 
-├── Cuadro_de_Mando_Donativos/
-│ ├── CdM 1. Configuración General
-│ ├── CdM 2. Carga General
-│ ├── CdM 3. Tabla Donaciones
-│ ├── CdM 4. Calendario
-│ ├── CdM 5. Selector
 │ 
 ├── README.md # Este documento
 ```

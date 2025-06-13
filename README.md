@@ -37,11 +37,16 @@ El proyecto incluye:
 
 ## 💻 Scripts disponibles
 
-- `Extractor_Donativos/script_extractor.qvs`:  
-  Contiene la carga completa de las 19 tablas utilizadas en el modelo, aplicando transformaciones como `ApplyMap`, `AutoNumber`, `Resident Load`, renombrado de campos y control de claves sintéticas.
+`Extractor` (scripts del proceso de generación de QVDs):
+Los archivos cuyo nombre comienza por Extractor contienen el proceso completo de obtención, transformación y modelado de datos. En particular:
 
-- `Cuadro_Donativos/script_cdm.qvs`:  
-  Script del cuadro de mando, con carga de QVDs, creación de campos derivados, relaciones lógicas entre hechos y dimensiones y preparación para visualización.
+- Extractor 1. Definición de parámetros globales, Extractor 2. Mappings, y los siguientes hasta el Extractor 10, comprenden la carga de las 19 tablas utilizadas en el modelo.
+Estos scripts aplican transformaciones como ApplyMap, AutoNumber, Resident Load, renombrado de campos y control de claves sintéticas. Cada archivo está orientado a una parte concreta del flujo de datos (por ejemplo, tablas maestras, donativos Bizum, calendario, causas, etc.).
+
+`CdM` (scripts del cuadro de mando):
+Los archivos que comienzan por CdM contienen el desarrollo del cuadro de mando en Qlik Sense.
+
+Estos scripts se encargan de la carga de QVDs generados previamente, la creación de campos derivados, la definición de relaciones entre hechos y dimensiones y la preparación de los datos para su visualización final en el dashboard.
 
 ## 🔗 Relación con la memoria
 

@@ -55,4 +55,5 @@ Para evitar redundancias, se han incluido en el documento únicamente dos ejempl
 
 ## 📝 Licencia
 
-Este código se publica únicamente con fines académicos y demostrativos. No contiene datos reales de clientes ni conexiones activas a bases internas.
+Este código se publica únicamente con fines académicos y demostrativos. 
+No contiene datos reales de clientes ni conexiones activas a bases internas.
